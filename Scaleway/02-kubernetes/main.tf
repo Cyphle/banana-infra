@@ -4,11 +4,7 @@ resource "scaleway_k8s_cluster" "banana" {
   cni                       = "cilium"
   region                    = "fr-par"
   private_network_id        = data.scaleway_vpc_private_network.private-net.id
-  delete_additional_resources = true
-
-  autoscaler_config {
-    disable_scale_down = true
-  }
+  delete_additional_resources = false
 }
 
 resource "scaleway_k8s_pool" "banana" {

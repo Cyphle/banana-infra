@@ -1,0 +1,2 @@
+#!/usr/bin/env amber
+echo "Hello world"
