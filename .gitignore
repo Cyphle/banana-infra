@@ -2,3 +2,6 @@ example/
 .idea/
 
 *.tfvars
+*.tfbackend
+
+.terraform/
