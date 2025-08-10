@@ -1,4 +1,5 @@
 resource "scaleway_rdb_instance" "banana-db" {
+  provider = scaleway.main
   name          = "banana-db"
   engine        = "PostgreSQL-15"
   node_type = "DB-DEV-S"
@@ -12,11 +13,13 @@ resource "scaleway_rdb_instance" "banana-db" {
 }
 
 resource "scaleway_rdb_database" "banana-db" {
+  provider = scaleway.main
   name        = "bananadb"
   instance_id = scaleway_rdb_instance.banana-db.id
 }
 
 resource "scaleway_redis_cluster" "banana_redis" {
+  provider = scaleway.main
   name         = "banana-redis"
   version      = "7.0"
   node_type    = "RED1-MICRO"
