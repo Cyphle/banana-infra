@@ -1,4 +1,4 @@
-resource "scaleway_rdb_instance" "pg" {
+resource "scaleway_rdb_instance" "banana-db" {
   name          = "banana-db"
   engine        = "PostgreSQL-15"
   node_type = "DB-DEV-S"
@@ -11,7 +11,25 @@ resource "scaleway_rdb_instance" "pg" {
   }
 }
 
-resource "scaleway_rdb_database" "app" {
+resource "scaleway_rdb_database" "banana-db" {
   name        = "bananadb"
-  instance_id = scaleway_rdb_instance.pg.id
+  instance_id = scaleway_rdb_instance.banana-db.id
+}
+
+resource "scaleway_redis_cluster" "banana_redis" {
+  name         = "banana-redis"
+  version      = "7.0"
+  node_type    = "RED1-MICRO"
+  cluster_size = 1
+  user_name    = var.redis_user
+  password     = var.redis_password
+
+  private_network {
+    id = data.scaleway_vpc_private_network.private_net.id
+  }
+
+  tags = {
+    environment = "production"
+    project     = "banana"
+  }
 }
