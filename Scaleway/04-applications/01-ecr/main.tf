@@ -1,13 +1,6 @@
-resource "scaleway_registry_namespace" "banana_back" {
-  name        = "banana-back"
-  description = "Registry for banana-back, a Node application"
+resource "scaleway_registry_namespace" "banana" {
+  name        = "banana"
+  description = "Namespace registry for banana application"
   is_public   = false  
-  region      = "fr-par"
-}
-
-resource "scaleway_registry_namespace" "banana_front" {
-  name        = "banana-front"
-  description = "Registry for banana-front, a React application"
-  is_public   = false   
   region      = "fr-par"
 }
