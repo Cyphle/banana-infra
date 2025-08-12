@@ -57,6 +57,96 @@ resource "aws_eks_node_group" "banana" {
   }
 }
 
+# Application Load Balancer pour EKS
+resource "aws_lb" "eks" {
+  name               = "banana-eks-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = data.aws_subnet.public_subnets[*].id
+
+  enable_deletion_protection = false
+
+  tags = {
+    Name        = "banana-eks-alb"
+    Environment = "production"
+    Project     = "banana"
+    Type        = "eks-ingress"
+  }
+}
+
+# Target Group pour EKS
+resource "aws_lb_target_group" "eks" {
+  name        = "banana-eks-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = data.aws_vpc.main.id
+  target_type = "instance"
+
+  health_check {
+    enabled             = true
+    healthy_threshold   = 2
+    interval            = 30
+    matcher             = "200"
+    path                = "/"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = 5
+    unhealthy_threshold = 2
+  }
+
+  tags = {
+    Name        = "banana-eks-target-group"
+    Environment = "production"
+    Project     = "banana"
+  }
+}
+
+# Listener ALB pour EKS
+resource "aws_lb_listener" "eks" {
+  load_balancer_arn = aws_lb.eks.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.eks.arn
+  }
+}
+
+# Security Group pour ALB EKS
+resource "aws_security_group" "alb" {
+  name_prefix = "banana-eks-alb-"
+  vpc_id      = data.aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "banana-eks-alb-sg"
+    Environment = "production"
+    Project     = "banana"
+  }
+}
+
 # IAM Role pour le cluster EKS
 resource "aws_iam_role" "eks_cluster" {
   name = "banana-eks-cluster-role"
