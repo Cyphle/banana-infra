@@ -1,0 +1,15 @@
+[package]
+name = "eso"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "eso"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { version = "1.0", features = ["full"] }
+anyhow = "1.0"
+dotenv = "0.15"
+colored = "2.0"
+serde = { version = "1.0", features = ["derive"] }

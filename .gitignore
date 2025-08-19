@@ -5,3 +5,10 @@ example/
 *.tfbackend
 
 .terraform/
+
+Scaleway/04-applications/03-external-secrets-operator/eso/.env
+*.local
+kubeconfig*
+.DS_Store
+target/
+.env
