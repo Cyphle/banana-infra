@@ -18,3 +18,6 @@ There is a goal of cost minimization as it is a personal project. There is also 
 
 ## Resources
 - Ingress controller & HTTPS: https://hbayraktar.medium.com/installing-cert-manager-and-nginx-ingress-with-lets-encrypt-on-kubernetes-fe0dff4b1924
+
+## TODO
+- A revoir ce readme
