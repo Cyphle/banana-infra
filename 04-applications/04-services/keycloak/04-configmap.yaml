@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: keycloak-config
-  namespace: keycloak
+  namespace: banana
 data:
   KC_DB: "postgres"
   KC_DB_URL: "<complete postgres url avec port et base de données cible>"

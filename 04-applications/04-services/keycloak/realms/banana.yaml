@@ -7,7 +7,7 @@ spec:
   keycloakCRName: keycloak-instance
   realm:
     id: "90ca7b39-a00c-4bd5-a66c-0b533ff2f368"
-    realm: "Banana"
+    realm: "banana"
     enabled: true
 
     # Configuration de base
