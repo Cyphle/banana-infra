@@ -6,7 +6,7 @@ example/
 
 .terraform/
 
-Scaleway/04-applications/03-external-secrets-operator/eso/02-in-namespace/.env
+04-applications/03-external-secrets-operator/eso/02-in-namespace/.env
 *.local
 kubeconfig*
 .DS_Store
