@@ -1,0 +1,36 @@
+TOOD: Revoir la partie TLS
+---
+# Ingress pour l'accès public
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-ingress
+  namespace: keycloak
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "8"
+    # Bloquer l'accès à l'admin console via l'ingress public
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location ~ ^/admin {
+        return 404;
+      }
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+    - hosts:
+        - auth.yourdomain.com
+      secretName: keycloak-tls
+  rules:
+    - host: auth.yourdomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak-service
+                port:
+                  number: 8080

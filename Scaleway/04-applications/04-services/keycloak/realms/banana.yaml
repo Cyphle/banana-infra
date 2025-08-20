@@ -1,0 +1,322 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: KeycloakRealmImport
+metadata:
+  name: banana-realm-import
+  namespace: keycloak-system
+spec:
+  keycloakCRName: keycloak-instance
+  realm:
+    id: "90ca7b39-a00c-4bd5-a66c-0b533ff2f368"
+    realm: "Banana"
+    enabled: true
+
+    # Configuration de base
+    displayName: "Banana Realm"
+    displayNameHtml: "<div class=\"kc-logo-text\"><span>Banana</span></div>"
+
+    # Paramètres de sécurité
+    sslRequired: "external"
+    registrationAllowed: true
+    registrationEmailAsUsername: false
+    rememberMe: false
+    verifyEmail: false
+    loginWithEmailAllowed: true
+    duplicateEmailsAllowed: false
+    resetPasswordAllowed: true
+    editUsernameAllowed: false
+    bruteForceProtected: false
+
+    # Timeouts et durées de vie des tokens
+    accessTokenLifespan: 300
+    accessTokenLifespanForImplicitFlow: 900
+    ssoSessionIdleTimeout: 1800
+    ssoSessionMaxLifespan: 36000
+    offlineSessionIdleTimeout: 2592000
+    offlineSessionMaxLifespanEnabled: false
+    offlineSessionMaxLifespan: 5184000
+    accessCodeLifespan: 60
+    accessCodeLifespanUserAction: 300
+    accessCodeLifespanLogin: 1800
+    actionTokenGeneratedByAdminLifespan: 43200
+    actionTokenGeneratedByUserLifespan: 300
+
+    # OAuth2 Device Flow
+    oauth2DeviceCodeLifespan: 600
+    oauth2DevicePollingInterval: 5
+
+    # Rôles du realm
+    roles:
+      realm:
+        - name: "default-roles-banana"
+          description: "${role_default-roles}"
+          composite: true
+          composites:
+            realm:
+              - "offline_access"
+              - "uma_authorization"
+            client:
+              account:
+                - "manage-account"
+                - "view-profile"
+        - name: "offline_access"
+          description: "${role_offline-access}"
+        - name: "uma_authorization"
+          description: "${role_uma_authorization}"
+
+    # Clients
+    clients:
+      - clientId: "banana"
+        name: "Banana Application"
+        enabled: true
+        clientAuthenticatorType: "client-secret"
+        secret: "banana-secret"
+        standardFlowEnabled: true
+        implicitFlowEnabled: false
+        directAccessGrantsEnabled: true
+        serviceAccountsEnabled: false
+        publicClient: false
+        frontchannelLogout: true
+        protocol: "openid-connect"
+        redirectUris:
+          - "http://localhost:8181/*"
+        webOrigins:
+          - "http://localhost:8181"
+        attributes:
+          "post.logout.redirect.uris": "http://localhost:8181"
+          "oauth2.device.authorization.grant.enabled": "false"
+          "backchannel.logout.revoke.offline.tokens": "false"
+          "use.refresh.tokens": "true"
+          "oidc.ciba.grant.enabled": "false"
+          "backchannel.logout.session.required": "true"
+          "client_credentials.use_refresh_token": "false"
+          "tls.client.certificate.bound.access.tokens": "false"
+          "require.pushed.authorization.requests": "false"
+          "display.on.consent.screen": "false"
+          "token.response.type.bearer.lower-case": "false"
+        protocolMappers:
+          - name: "Client IP Address"
+            protocol: "openid-connect"
+            protocolMapper: "oidc-usersessionmodel-note-mapper"
+            config:
+              "user.session.note": "clientAddress"
+              "id.token.claim": "true"
+              "access.token.claim": "true"
+              "claim.name": "clientAddress"
+              "jsonType.label": "String"
+          - name: "Client ID"
+            protocol: "openid-connect"
+            protocolMapper: "oidc-usersessionmodel-note-mapper"
+            config:
+              "user.session.note": "client_id"
+              "id.token.claim": "true"
+              "access.token.claim": "true"
+              "claim.name": "client_id"
+              "jsonType.label": "String"
+          - name: "Client Host"
+            protocol: "openid-connect"
+            protocolMapper: "oidc-usersessionmodel-note-mapper"
+            config:
+              "user.session.note": "clientHost"
+              "id.token.claim": "true"
+              "access.token.claim": "true"
+              "claim.name": "clientHost"
+              "jsonType.label": "String"
+        defaultClientScopes:
+          - "web-origins"
+          - "acr"
+          - "roles"
+          - "profile"
+          - "basic"
+          - "email"
+        optionalClientScopes:
+          - "address"
+          - "phone"
+          - "offline_access"
+          - "microprofile-jwt"
+
+      - clientId: "banana-admin"
+        name: "Banana Admin Client"
+        enabled: true
+        clientAuthenticatorType: "client-secret"
+        secret: "banana-admin-secret"
+        standardFlowEnabled: true
+        implicitFlowEnabled: false
+        directAccessGrantsEnabled: true
+        serviceAccountsEnabled: true
+        publicClient: false
+        frontchannelLogout: true
+        protocol: "openid-connect"
+        redirectUris:
+          - "/*"
+        webOrigins:
+          - "/*"
+        attributes:
+          "oidc.ciba.grant.enabled": "false"
+          "backchannel.logout.session.required": "true"
+          "oauth2.device.authorization.grant.enabled": "false"
+          "backchannel.logout.revoke.offline.tokens": "false"
+        protocolMappers:
+          - name: "Client ID"
+            protocol: "openid-connect"
+            protocolMapper: "oidc-usersessionmodel-note-mapper"
+            config:
+              "user.session.note": "client_id"
+              "id.token.claim": "true"
+              "access.token.claim": "true"
+              "claim.name": "client_id"
+              "jsonType.label": "String"
+          - name: "Client IP Address"
+            protocol: "openid-connect"
+            protocolMapper: "oidc-usersessionmodel-note-mapper"
+            config:
+              "user.session.note": "clientAddress"
+              "id.token.claim": "true"
+              "access.token.claim": "true"
+              "claim.name": "clientAddress"
+              "jsonType.label": "String"
+          - name: "Client Host"
+            protocol: "openid-connect"
+            protocolMapper: "oidc-usersessionmodel-note-mapper"
+            config:
+              "user.session.note": "clientHost"
+              "id.token.claim": "true"
+              "access.token.claim": "true"
+              "claim.name": "clientHost"
+              "jsonType.label": "String"
+        defaultClientScopes:
+          - "web-origins"
+          - "acr"
+          - "roles"
+          - "profile"
+          - "basic"
+          - "email"
+        optionalClientScopes:
+          - "address"
+          - "phone"
+          - "offline_access"
+          - "microprofile-jwt"
+
+    # Utilisateurs
+    users:
+      - username: "service-account-banana-admin"
+        enabled: true
+        emailVerified: false
+        serviceAccountClientId: "banana-admin"
+        realmRoles:
+          - "default-roles-banana"
+        clientRoles:
+          realm-management:
+            - "manage-users"
+
+    # Scopes par défaut
+    defaultDefaultClientScopes:
+      - "role_list"
+      - "profile"
+      - "email"
+      - "roles"
+      - "web-origins"
+      - "acr"
+      - "basic"
+
+    defaultOptionalClientScopes:
+      - "offline_access"
+      - "address"
+      - "phone"
+      - "microprofile-jwt"
+
+    # Configuration des en-têtes de sécurité
+    browserSecurityHeaders:
+      contentSecurityPolicyReportOnly: ""
+      xContentTypeOptions: "nosniff"
+      referrerPolicy: "no-referrer"
+      xRobotsTag: "none"
+      xFrameOptions: "SAMEORIGIN"
+      contentSecurityPolicy: "frame-src 'self'; frame-ancestors 'self'; object-src 'none';"
+      xXSSProtection: "1; mode=block"
+      strictTransportSecurity: "max-age=31536000; includeSubDomains"
+
+    # Configuration OTP
+    otpPolicyType: "totp"
+    otpPolicyAlgorithm: "HmacSHA1"
+    otpPolicyInitialCounter: 0
+    otpPolicyDigits: 6
+    otpPolicyLookAheadWindow: 1
+    otpPolicyPeriod: 30
+    otpPolicyCodeReusable: false
+    otpSupportedApplications:
+      - "totpAppFreeOTPName"
+      - "totpAppGoogleName"
+      - "totpAppMicrosoftAuthenticatorName"
+
+    # WebAuthn
+    webAuthnPolicyRpEntityName: "keycloak"
+    webAuthnPolicySignatureAlgorithms:
+      - "ES256"
+    webAuthnPolicyRpId: ""
+    webAuthnPolicyAttestationConveyancePreference: "not specified"
+    webAuthnPolicyAuthenticatorAttachment: "not specified"
+    webAuthnPolicyRequireResidentKey: "not specified"
+    webAuthnPolicyUserVerificationRequirement: "not specified"
+    webAuthnPolicyCreateTimeout: 0
+    webAuthnPolicyAvoidSameAuthenticatorRegister: false
+    webAuthnPolicyAcceptableAaguids: []
+    webAuthnPolicyExtraOrigins: []
+
+    # Actions requises
+    requiredActions:
+      - alias: "CONFIGURE_TOTP"
+        name: "Configure OTP"
+        providerId: "CONFIGURE_TOTP"
+        enabled: true
+        defaultAction: false
+        priority: 10
+      - alias: "UPDATE_PASSWORD"
+        name: "Update Password"
+        providerId: "UPDATE_PASSWORD"
+        enabled: true
+        defaultAction: false
+        priority: 30
+      - alias: "UPDATE_PROFILE"
+        name: "Update Profile"
+        providerId: "UPDATE_PROFILE"
+        enabled: true
+        defaultAction: false
+        priority: 40
+      - alias: "VERIFY_EMAIL"
+        name: "Verify Email"
+        providerId: "VERIFY_EMAIL"
+        enabled: true
+        defaultAction: false
+        priority: 50
+
+    # Événements
+    eventsEnabled: false
+    eventsListeners:
+      - "jboss-logging"
+    adminEventsEnabled: false
+    adminEventsDetailsEnabled: false
+
+    # Flows d'authentification (principaux)
+    browserFlow: "browser"
+    registrationFlow: "registration"
+    directGrantFlow: "direct grant"
+    resetCredentialsFlow: "reset credentials"
+    clientAuthenticationFlow: "clients"
+    dockerAuthenticationFlow: "docker auth"
+    firstBrokerLoginFlow: "first broker login"
+
+    # Attributs supplémentaires
+    attributes:
+      cibaBackchannelTokenDeliveryMode: "poll"
+      cibaAuthRequestedUserHint: "login_hint"
+      clientOfflineSessionMaxLifespan: "0"
+      oauth2DevicePollingInterval: "5"
+      clientSessionIdleTimeout: "0"
+      clientOfflineSessionIdleTimeout: "0"
+      cibaInterval: "5"
+      realmReusableOtpCode: "false"
+      cibaExpiresIn: "120"
+      oauth2DeviceCodeLifespan: "600"
+      parRequestUriLifespan: "60"
+      clientSessionMaxLifespan: "0"
+      organizationsEnabled: "false"

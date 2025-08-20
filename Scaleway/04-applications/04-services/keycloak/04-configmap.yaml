@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-config
+  namespace: keycloak
+data:
+  KC_DB: "postgres"
+  KC_DB_URL: "<complete postgres url avec port et base de données cible>"
+  KC_HOSTNAME: "auth.yourdomain.com"
+  KC_HOSTNAME_STRICT: "true"
+  KC_HOSTNAME_STRICT_HTTPS: "true"
+  KC_HTTP_ENABLED: "true"
+  KC_PROXY: "edge"
+  KC_HEALTH_ENABLED: "true"
+  KC_METRICS_ENABLED: "true"
