@@ -34,7 +34,7 @@ resource "scaleway_instance_security_group" "bastion_sg" {
 
 # IP publique pour le bastion
 resource "scaleway_instance_ip" "bastion_ip" {
-  type = "nat"
+  type = "routed_ipv4"
 }
 
 # Instance bastion

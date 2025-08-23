@@ -17,6 +17,14 @@ resource "scaleway_rdb_database" "banana-db" {
   instance_id = scaleway_rdb_instance.banana-db.id
 }
 
+# Privilèges pour l'utilisateur principal sur la base bananadb
+resource "scaleway_rdb_privilege" "banana_user_privileges" {
+  instance_id   = scaleway_rdb_instance.banana-db.id
+  user_name     = var.db_user
+  database_name = scaleway_rdb_database.banana-db.name
+  permission    = "all"
+}
+
 resource "scaleway_redis_cluster" "banana_redis" {
   name         = "banana-redis"
   version      = "7.0.5"
